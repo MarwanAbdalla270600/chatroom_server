@@ -42,9 +42,10 @@ public class ClientHandler extends Thread {
                 }
                 System.out.println(message);
                 SocketMessage socketmessage = SocketMessage.fromJson(message);
-                System.out.println(socketmessage.getMethod());
+
+                handleMethod(socketmessage.getMethod(), socketmessage.getObject());
                 //System.out.println(socketmessage.getMethod());
-                writer.writeObject("register");
+                //writer.writeObject("register");
 
                // SocketMessage socketMessage = SocketMessage.fromJson(message);
 
@@ -67,6 +68,38 @@ public class ClientHandler extends Thread {
             } catch (IOException e) {
                 /*e.printStackTrace();*/
             }
+        }
+    }
+
+
+
+    public void handleMethod(String method, Object object) {
+        SocketMessage response;
+        switch (method) {
+            case "register":
+                response = new SocketMessage("response", true);
+                try {
+                    this.writer.writeObject(response.toJson());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case "login":
+                response = new SocketMessage("response", true);
+                try {
+                    this.writer.writeObject(response.toJson());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            default:
+                response = new SocketMessage("response", false);
+                try {
+                    this.writer.writeObject(response.toJson());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
         }
     }
 }
