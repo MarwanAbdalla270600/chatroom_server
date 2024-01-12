@@ -41,7 +41,8 @@ public class ClientHandler extends Thread {
                     break;
                 }
                 System.out.println(message);
-                //SocketMessage socketmessage = SocketMessage.fromJson(message);
+                SocketMessage socketmessage = SocketMessage.fromJson(message);
+                System.out.println(socketmessage.getMethod());
                 //System.out.println(socketmessage.getMethod());
                 writer.writeObject("register");
 
@@ -53,8 +54,9 @@ public class ClientHandler extends Thread {
 
             }
         } catch (IOException e) {
-            /*   e.printStackTrace();*/
+            e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
             clients.remove(this);

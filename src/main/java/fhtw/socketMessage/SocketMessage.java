@@ -9,13 +9,17 @@ import java.io.Serializable;
 @Getter
 @ToString
 public class SocketMessage implements Serializable {
-    private final String method;
+    private String method;
 
-    private final Object Object;
+    private Object object;
 
     public SocketMessage(String method, Object object) {
         this.method = method;
-        Object = object;
+        this.object = object;
+    }
+
+    public SocketMessage() {
+
     }
 
     public static SocketMessage fromJson(String json) throws JsonProcessingException {
