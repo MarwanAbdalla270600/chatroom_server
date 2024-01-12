@@ -21,6 +21,8 @@ public class ClientHandler extends Thread {
     private ObjectInputStream reader;
     private ObjectOutputStream writer;
 
+    private String username;
+
     public ClientHandler(Socket socket, ArrayList<ClientHandler> clients) {
         try {
             this.socket = socket;
@@ -59,8 +61,8 @@ public class ClientHandler extends Thread {
         } finally {
             clients.remove(this);
             try {
-                //reader.close();
-
+                //make user offline
+                reader.close();
                 writer.close();
                 socket.close();
             } catch (IOException e) {
@@ -70,31 +72,23 @@ public class ClientHandler extends Thread {
     }
 
 
-    public void handleMethod(String header, String body) throws JsonProcessingException {
+    public void handleMethod(String header, String body) throws IOException {
+        User user;
         switch (header) {
             case "register":
-                User user = User.fromJson(body);
+                user = User.fromJson(body);
                 System.out.println("User with Name " + user.getUsername() + " registered");
-
-                try {
-                    this.writer.writeObject(true);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                this.writer.writeObject(true);
                 break;
             case "login":
-                try {
-                    this.writer.writeObject(true);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                user = User.fromJson(body);
+                System.out.println("User with Name " + user.getUsername() + " logged in");
+                this.username = username;
+                //make him beeing online
+                this.writer.writeObject(true);
                 break;
             default:
-                try {
-                    this.writer.writeObject(true);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                this.writer.writeObject(true);
                 break;
         }
     }
@@ -111,11 +105,9 @@ public class ClientHandler extends Thread {
 
     public String getBody(String json) {
         int semicolonIndex = json.indexOf(';');
-
         if (semicolonIndex != -1) {
             return json.substring(semicolonIndex + 1);
         } else {
-            // Return an empty string if semicolon is not found
             return "";
         }
     }
