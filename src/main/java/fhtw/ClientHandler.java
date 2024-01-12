@@ -1,13 +1,17 @@
 package fhtw;
 
-import fhtw.socketMessage.SocketMessage;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import fhtw.user.User;
+import lombok.Getter;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
+@Getter
 public class ClientHandler extends Thread {
 
     private ArrayList<ClientHandler> clients;
@@ -16,8 +20,6 @@ public class ClientHandler extends Thread {
 
     private ObjectInputStream reader;
     private ObjectOutputStream writer;
-
-    private String username;
 
     public ClientHandler(Socket socket, ArrayList<ClientHandler> clients) {
         try {
@@ -41,21 +43,16 @@ public class ClientHandler extends Thread {
                     break;
                 }
                 System.out.println(message);
-                SocketMessage socketmessage = SocketMessage.fromJson(message);
 
-                handleMethod(socketmessage.getMethod(), socketmessage.getObject());
-                //System.out.println(socketmessage.getMethod());
-                //writer.writeObject("register");
-
-               // SocketMessage socketMessage = SocketMessage.fromJson(message);
-
-               // System.out.println(socketMessage.getMethod());
+                String header = getHeader(message);
+                String body = getBody(message);
+                handleMethod(header, body);
             }
             {
 
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("User disconnected");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -63,6 +60,7 @@ public class ClientHandler extends Thread {
             clients.remove(this);
             try {
                 //reader.close();
+
                 writer.close();
                 socket.close();
             } catch (IOException e) {
@@ -72,35 +70,56 @@ public class ClientHandler extends Thread {
     }
 
 
-
-    public void handleMethod(String method, Object object) {
-        SocketMessage response;
-        switch (method) {
+    public void handleMethod(String header, String body) throws JsonProcessingException {
+        switch (header) {
             case "register":
-                response = new SocketMessage("response", true);
+                User user = User.fromJson(body);
+                System.out.println("User with Name " + user.getUsername() + " registered");
+
                 try {
-                    this.writer.writeObject(response.toJson());
+                    this.writer.writeObject(true);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 break;
             case "login":
-                response = new SocketMessage("response", true);
                 try {
-                    this.writer.writeObject(response.toJson());
+                    this.writer.writeObject(true);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 break;
             default:
-                response = new SocketMessage("response", false);
                 try {
-                    this.writer.writeObject(response.toJson());
+                    this.writer.writeObject(true);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 break;
         }
     }
+
+    public String getHeader(String json) {
+        int semicolonIndex = json.indexOf(';');
+        if (semicolonIndex != -1) {
+            return json.substring(0, semicolonIndex);
+        } else {
+            return json;
+        }
+
+    }
+
+    public String getBody(String json) {
+        int semicolonIndex = json.indexOf(';');
+
+        if (semicolonIndex != -1) {
+            return json.substring(semicolonIndex + 1);
+        } else {
+            // Return an empty string if semicolon is not found
+            return "";
+        }
+    }
+
 }
+
 
