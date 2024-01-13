@@ -1,6 +1,7 @@
 package fhtw;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import fhtw.chat.PrivateChat;
 import fhtw.data.ValidationController;
 import fhtw.user.User;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Set;
 
 @Getter
 public class ClientHandler extends Thread {
@@ -80,7 +82,6 @@ public class ClientHandler extends Thread {
                 user = User.fromJson(body);
                 if (ValidationController.registerNewUser(user)) {
                     System.out.println("User with Name " + user.getUsername() + " registered");
-                    this.username = username;
                     //TODO: make him being online und dann gleich einloggen
                     this.writer.writeObject(true);
                 }
@@ -93,11 +94,25 @@ public class ClientHandler extends Thread {
                 user = User.fromJson(body);
                 if (ValidationController.checkLogin(user)) {
                     System.out.println("User with Name " + user.getUsername() + " logged in");
+                    this.username = username;
+                    // TODO: online status setzen
                     this.writer.writeObject(true);
                 } else {
                     this.writer.writeObject(false);
                     System.out.println("nana so nit, try again");
                 }
+                break;
+            case "addFriend":
+                String friendUsername = body;
+                User.addUser(username, friendUsername);
+                this.writer.writeObject(true);
+
+                break;
+            case "initData":
+                user = User.fromJson(body);
+                Set<PrivateChat> userChats = user.getUserPrivateChats();
+                this.writer.writeObject(userChats);
+
                 break;
             default:
                 this.writer.writeObject(true);
