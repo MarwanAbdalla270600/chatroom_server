@@ -1,6 +1,7 @@
 package fhtw;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import fhtw.data.ValidationController;
 import fhtw.user.User;
 import lombok.Getter;
 
@@ -77,15 +78,26 @@ public class ClientHandler extends Thread {
         switch (header) {
             case "register":
                 user = User.fromJson(body);
-                System.out.println("User with Name " + user.getUsername() + " registered");
-                this.writer.writeObject(true);
+                if (ValidationController.registerNewUser(user)) {
+                    System.out.println("User with Name " + user.getUsername() + " registered");
+                    this.username = username;
+                    //TODO: make him being online und dann gleich einloggen
+                    this.writer.writeObject(true);
+                }
+                else {
+                    this.writer.writeObject(false);
+                    System.out.println("nana so nit, try again");
+                }
                 break;
             case "login":
                 user = User.fromJson(body);
-                System.out.println("User with Name " + user.getUsername() + " logged in");
-                this.username = username;
-                //make him beeing online
-                this.writer.writeObject(true);
+                if (ValidationController.checkLogin(user)) {
+                    System.out.println("User with Name " + user.getUsername() + " logged in");
+                    this.writer.writeObject(true);
+                } else {
+                    this.writer.writeObject(false);
+                    System.out.println("nana so nit, try again");
+                }
                 break;
             default:
                 this.writer.writeObject(true);
