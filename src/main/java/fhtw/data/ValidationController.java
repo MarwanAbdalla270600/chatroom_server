@@ -40,9 +40,27 @@ public class ValidationController {
     }
 
     public static boolean checkLogin(User user) {
-        return findUser(user.getUsername()) != null;
+        return loginUsernameIsCorrect(user) && loginPasswordIsCorrect(user);
     }
 
+    private static boolean loginPasswordIsCorrect(User user) {
+        if (user.getPassword() == null || user.getPassword().isEmpty()) return false;
+        User registeredUser = DatabaseHandler.getRegisteredUsers().get(user.getUsername());
+        if (!registeredUser.getPassword().equals(user.getPassword())) {
+            System.out.println("pw wrong, try again");
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean loginUsernameIsCorrect(User user) {
+        if (user.getUsername() == null || user.getUsername().isEmpty()) return false;
+        if (!DatabaseHandler.getRegisteredUsers().containsKey(user.getUsername())) {
+            System.out.println("Username not correct or not registered, try again");
+            return false;
+        }
+        return true;
+    }
 
     private static boolean isValidUsername(String username) {
         if (username == null) return false;
