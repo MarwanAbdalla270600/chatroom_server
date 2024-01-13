@@ -2,7 +2,6 @@ package fhtw.data;
 
 import fhtw.user.User;
 
-import java.io.Serializable;
 
 public class ValidationController {
 
@@ -18,7 +17,6 @@ public class ValidationController {
                     "numbers AND digits!");
             return false;
         }
-        //denk für gender wirds keine Validierung brauchen, weil man im GUI graphisch nur zwischen weibl./männl. wählt?!
 
         if (!DatabaseHandler.registeredUsers.containsKey(user.getUsername())) {
             DatabaseHandler.registeredUsers.put(user.getUsername(), user);
@@ -28,6 +26,21 @@ public class ValidationController {
 
         System.out.println("Username already exists, please choose a other name");
         return false;
+    }
+
+    public static User findUser(String username) {
+        if (username == null || username.isEmpty()) {
+            return null;
+        }
+        if (DatabaseHandler.getRegisteredUsers().containsKey(username)) {
+            User searchedUser = DatabaseHandler.getRegisteredUsers().get(username);
+            return searchedUser;
+        }
+        return null;
+    }
+
+    public static boolean checkLogin(User user) {
+        return findUser(user.getUsername()) != null;
     }
 
 
@@ -47,7 +60,7 @@ public class ValidationController {
         return true;
     }
 
-    private static boolean isValidPassword(String password) { //checks that pw's have digits AND letters and 6-25 char length
+    private static boolean isValidPassword(String password) {
         if (password == null) return false;
 
         int minLength = 6;
