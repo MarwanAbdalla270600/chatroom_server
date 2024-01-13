@@ -44,4 +44,4 @@ verschiedenen PC’s nutzen zu können.
 - Projekt wird in und für Java SE 17 entwickelt.
 - Für das Front-End der App wird JavaFX benutzt.
 - Es wird ein externer Server gehostet (Docker).
-- Das Projekt muss bis zum 14.01.2024 funktionsfähig und abgegeben werden.
+- Das Projekt muss bis zum 21.01.2024 funktionsfähig und abgegeben werden.
