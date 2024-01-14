@@ -1,22 +1,18 @@
 package fhtw;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fhtw.chat.PrivateChat;
 import fhtw.data.DatabaseHandler;
 import fhtw.data.ValidationController;
 import fhtw.user.User;
 import lombok.Getter;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 public class ClientHandler extends Thread {
@@ -67,7 +63,7 @@ public class ClientHandler extends Thread {
         } finally {
             clients.remove(this);
             try {
-               // DatabaseHandler.getRegisteredUsers().get(username).setOnlineStatus(false);
+                // DatabaseHandler.getRegisteredUsers().get(username).setOnlineStatus(false);
                 reader.close();
                 writer.close();
                 socket.close();
@@ -83,14 +79,18 @@ public class ClientHandler extends Thread {
         switch (header) {
             case "register":
                 user = User.fromJson(body);
+                user.setPrivateChats(); //GANZ WICHTIG, SONST CRASHED ALLES
                 if (ValidationController.registerNewUser(user)) {
+                    DatabaseHandler.getRegisteredUsers().put(user.getUsername(), user);
+
                     System.out.println("User with Name " + user.getUsername() + " registered");
                     this.writer.writeObject(true);
-                }
-                else {
+                } else {
                     this.writer.writeObject(false);
                     System.out.println("nana so nit, try again");
                 }
+                System.out.println(DatabaseHandler.getRegisteredUsers());
+
                 break;
             case "login":
                 user = User.fromJson(body);
@@ -117,8 +117,13 @@ public class ClientHandler extends Thread {
 
                 break;
             case "initData":
+                System.out.println("initdata");
+                User tmp = DatabaseHandler.getRegisteredUsers().get(this.username);
+                System.out.println("TEST: " + tmp);
                 //System.out.println("IN initData");
+                System.out.println(this.username);
                 List<PrivateChat> userChats = DatabaseHandler.getRegisteredUsers().get(this.username).getPrivateChats();
+                //System.out.println(userChats);
                 //System.out.println("JSON:" + PrivateChat.convertSetToJson(userChats));
                 this.writer.writeObject(PrivateChat.convertSetToJson(userChats));
 
@@ -148,8 +153,6 @@ public class ClientHandler extends Thread {
             return "";
         }
     }
-
-
 
 
 }

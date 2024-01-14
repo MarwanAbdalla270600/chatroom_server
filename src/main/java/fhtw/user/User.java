@@ -33,15 +33,18 @@ public class User implements Serializable {
 
 
     public User() {
+        this.privateChats = new ArrayList<>();
+    }
+
+    public void setPrivateChats() {
+        this.privateChats = new ArrayList<>();
     }
 
     public void setOnlineStatus(boolean online) {
         this.online = online;
     }
 
-    public List<PrivateChat> getPrivateChats() {
-        return privateChats;
-    }
+
 
 /*public Set<PrivateChat> getUserPrivateChats() {
         Set<PrivateChat> privateChats = new HashSet<>();
