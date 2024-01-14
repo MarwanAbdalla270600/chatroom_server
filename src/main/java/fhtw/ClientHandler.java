@@ -63,7 +63,7 @@ public class ClientHandler extends Thread {
         } finally {
             clients.remove(this);
             try {
-                // DatabaseHandler.getRegisteredUsers().get(username).setOnlineStatus(false);
+                DatabaseHandler.getRegisteredUsers().get(username).setOnlineStatus(false);
                 reader.close();
                 writer.close();
                 socket.close();
@@ -123,6 +123,7 @@ public class ClientHandler extends Thread {
                 //System.out.println("IN initData");
                 System.out.println(this.username);
                 List<PrivateChat> userChats = DatabaseHandler.getRegisteredUsers().get(this.username).getPrivateChats();
+                PrivateChat.setOnlineForList(userChats);
                 //System.out.println(userChats);
                 //System.out.println("JSON:" + PrivateChat.convertSetToJson(userChats));
                 this.writer.writeObject(PrivateChat.convertSetToJson(userChats));

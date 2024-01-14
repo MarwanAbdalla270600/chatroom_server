@@ -24,14 +24,15 @@ public class PrivateChat implements Serializable {
     private String secondMember;
     private List<PrivateChatMessage> chatMessages;
     private static int nextId = 0;
+    private boolean isOnline;
 
     public PrivateChat(String firstMember, String secondMember) {
         this.chatId = nextId;
         nextId++;
         this.firstMember = firstMember;
-        this.firstMember += DatabaseHandler.getRegisteredUsers().get(firstMember).getGender();
+        this.firstMember += DatabaseHandler.getRegisteredUsers().get(firstMember).getGender();  //for gender
         this.secondMember = secondMember;
-        this.secondMember += DatabaseHandler.getRegisteredUsers().get(secondMember).getGender();
+        this.secondMember += DatabaseHandler.getRegisteredUsers().get(secondMember).getGender();//for gender
         this.chatMessages = new LinkedList<>();
         //TODO LocalDateTime timeStamp;
     }
@@ -50,4 +51,23 @@ public class PrivateChat implements Serializable {
         this.chatMessages.add(message);
     }
 
-}//end
+
+    public static void setOnlineForList(List<PrivateChat> list) {
+        for(PrivateChat chat: list) {
+            String firstString = DatabaseHandler.getPrivateChats().get(chat.chatId).getFirstMember();
+            String secondString = DatabaseHandler.getPrivateChats().get(chat.chatId).getSecondMember();
+            firstString = firstString.substring(0, firstString.length()-1);
+            secondString = secondString.substring(0, secondString.length()-1);
+
+            User first = DatabaseHandler.getRegisteredUsers().get(firstString);
+            User second = DatabaseHandler.getRegisteredUsers().get(secondString);
+
+
+            if(first != null && second != null) {
+                System.out.println("first: " + first.isOnline());
+                System.out.println("second: " + second.isOnline());
+                chat.setOnline(first.isOnline() && second.isOnline());
+            }
+        }
+    }
+}
