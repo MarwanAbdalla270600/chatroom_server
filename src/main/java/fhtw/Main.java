@@ -18,10 +18,10 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException {
         //Starting server:
-        User testUser = new User("Max", "Test123", 'm');
-        User testUser2 = new User("Flo", "Test123", 'm');
-        User testUser3 = new User("Tom", "Test123", 'm');
-        User testUser4 = new User("Marwan", "Test123", 'm');
+        User testUser = new User("Max", "Test123", 'f');
+        User testUser2 = new User("Flo", "Test123", 'f');
+        User testUser3 = new User("Tom", "Test123", 'f');
+        User testUser4 = new User("Marwan", "Test123", 'f');
 
         DatabaseHandler.getRegisteredUsers().put("Max", testUser);
         DatabaseHandler.getRegisteredUsers().put("Flo", testUser2);

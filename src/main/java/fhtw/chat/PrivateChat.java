@@ -2,6 +2,7 @@ package fhtw.chat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fhtw.data.DatabaseHandler;
 import fhtw.message.PrivateChatMessage;
 
 import java.io.Serializable;
@@ -28,7 +29,9 @@ public class PrivateChat implements Serializable {
         this.chatId = nextId;
         nextId++;
         this.firstMember = firstMember;
+        this.firstMember += DatabaseHandler.getRegisteredUsers().get(firstMember).getGender();
         this.secondMember = secondMember;
+        this.secondMember += DatabaseHandler.getRegisteredUsers().get(secondMember).getGender();
         this.chatMessages = new LinkedList<>();
         //TODO LocalDateTime timeStamp;
     }

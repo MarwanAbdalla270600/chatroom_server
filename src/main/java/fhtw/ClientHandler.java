@@ -51,7 +51,6 @@ public class ClientHandler extends Thread {
                 if (message.equalsIgnoreCase("exit")) {
                     break;
                 }
-                System.out.println(message);
 
                 String header = getHeader(message);
                 String body = getBody(message);
@@ -118,9 +117,9 @@ public class ClientHandler extends Thread {
 
                 break;
             case "initData":
-                System.out.println("IN initData");
+                //System.out.println("IN initData");
                 List<PrivateChat> userChats = DatabaseHandler.getRegisteredUsers().get(this.username).getPrivateChats();
-                System.out.println("JSON:" + PrivateChat.convertSetToJson(userChats));
+                //System.out.println("JSON:" + PrivateChat.convertSetToJson(userChats));
                 this.writer.writeObject(PrivateChat.convertSetToJson(userChats));
 
 
