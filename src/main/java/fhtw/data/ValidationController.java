@@ -18,8 +18,8 @@ public class ValidationController {
             return false;
         }
 
-        if (!DatabaseHandler.registeredUsers.containsKey(user.getUsername())) {
-            DatabaseHandler.registeredUsers.put(user.getUsername(), user);
+        if (!DatabaseHandler.getRegisteredUsers().containsKey(user.getUsername())) {
+            DatabaseHandler.getRegisteredUsers().put(user.getUsername(), user);
             System.out.println("New User " + user.getUsername() + " successfully registered");
             return true;
         }

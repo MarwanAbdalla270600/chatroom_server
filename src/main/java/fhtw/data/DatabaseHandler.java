@@ -12,8 +12,8 @@ import lombok.Setter;
 @Setter
 
 public class DatabaseHandler {
-    public static Map<String, User> registeredUsers = new HashMap<>();
-    public static Map<Integer, PrivateChat> privateChats = new HashMap<>();
+    private static Map<String, User> registeredUsers = new HashMap<>();
+    private static Map<Integer, PrivateChat> privateChats = new HashMap<>();
 
     public static Map<String, User> getRegisteredUsers() {
         return registeredUsers;
