@@ -1,6 +1,11 @@
 package fhtw;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fhtw.chat.PrivateChat;
+import fhtw.data.DatabaseHandler;
+import fhtw.data.ValidationController;
 import fhtw.user.User;
 import lombok.Getter;
 
@@ -10,6 +15,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 public class ClientHandler extends Thread {
@@ -61,7 +68,7 @@ public class ClientHandler extends Thread {
         } finally {
             clients.remove(this);
             try {
-                //make user offline
+               // DatabaseHandler.getRegisteredUsers().get(username).setOnlineStatus(false);
                 reader.close();
                 writer.close();
                 socket.close();
@@ -77,15 +84,46 @@ public class ClientHandler extends Thread {
         switch (header) {
             case "register":
                 user = User.fromJson(body);
-                System.out.println("User with Name " + user.getUsername() + " registered");
-                this.writer.writeObject(true);
+                if (ValidationController.registerNewUser(user)) {
+                    System.out.println("User with Name " + user.getUsername() + " registered");
+                    this.writer.writeObject(true);
+                }
+                else {
+                    this.writer.writeObject(false);
+                    System.out.println("nana so nit, try again");
+                }
                 break;
             case "login":
                 user = User.fromJson(body);
-                System.out.println("User with Name " + user.getUsername() + " logged in");
-                this.username = username;
-                //make him beeing online
-                this.writer.writeObject(true);
+                System.out.println(user);
+                if (ValidationController.checkLogin(user)) {
+                    System.out.println("User with Name " + user.getUsername() + " logged in");
+                    this.username = user.getUsername();
+                    System.out.println(this.username);
+                    DatabaseHandler.getRegisteredUsers().get(username).setOnlineStatus(true);
+                    this.writer.writeObject(true);
+                } else {
+                    this.writer.writeObject(false);
+                    System.out.println("nana so nit, try again");
+                }
+                break;
+            case "addFriend":
+                String friendUsername = body;
+
+                if (User.addUser(this.username, friendUsername)) {
+                    this.writer.writeObject(true);
+                } else {
+                    this.writer.writeObject(false);
+                }
+
+                break;
+            case "initData":
+                System.out.println("IN initData");
+                List<PrivateChat> userChats = DatabaseHandler.getRegisteredUsers().get(this.username).getPrivateChats();
+                System.out.println("JSON:" + PrivateChat.convertSetToJson(userChats));
+                this.writer.writeObject(PrivateChat.convertSetToJson(userChats));
+
+
                 break;
             default:
                 this.writer.writeObject(true);
@@ -111,6 +149,9 @@ public class ClientHandler extends Thread {
             return "";
         }
     }
+
+
+
 
 }
 

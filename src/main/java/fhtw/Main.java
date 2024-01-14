@@ -3,6 +3,11 @@ package fhtw;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 
+import fhtw.chat.PrivateChat;
+import fhtw.data.DatabaseHandler;
+import fhtw.message.PrivateChatMessage;
+import fhtw.user.User;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,6 +18,35 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException {
         //Starting server:
+        User testUser = new User("Max", "Test123", 'm');
+        User testUser2 = new User("Flo", "Test123", 'm');
+        User testUser3 = new User("Tom", "Test123", 'm');
+        User testUser4 = new User("Marwan", "Test123", 'm');
+
+        DatabaseHandler.getRegisteredUsers().put("Max", testUser);
+        DatabaseHandler.getRegisteredUsers().put("Flo", testUser2);
+        DatabaseHandler.getRegisteredUsers().put("Tom", testUser3);
+        DatabaseHandler.getRegisteredUsers().put("Marwan", testUser4);
+
+        testUser.addUser(testUser.getUsername(), testUser2.getUsername());
+        testUser.addUser(testUser.getUsername(), testUser3.getUsername());
+
+        PrivateChatMessage message = new PrivateChatMessage("Max", "Das ist eine Nachricht");
+        PrivateChatMessage message2 = new PrivateChatMessage("Max", "22Das ist eine Nachricht 222");
+        PrivateChatMessage message3 = new PrivateChatMessage("Tom", "33Das ist eine Nachricht3333");
+        PrivateChatMessage message4 = new PrivateChatMessage("Max", "Hey Tom");
+        PrivateChatMessage message5 = new PrivateChatMessage("Tom", "Hey Max");
+
+        DatabaseHandler.findPrivatChatbyId(0).addMsg(message);
+        DatabaseHandler.findPrivatChatbyId(0).addMsg(message2);
+        DatabaseHandler.findPrivatChatbyId(0).addMsg(message3);
+
+
+        DatabaseHandler.findPrivatChatbyId(1).addMsg(message);
+        DatabaseHandler.findPrivatChatbyId(1).addMsg(message2);
+        DatabaseHandler.findPrivatChatbyId(1).addMsg(message3);
+        DatabaseHandler.findPrivatChatbyId(1).addMsg(message4);
+        DatabaseHandler.findPrivatChatbyId(1).addMsg(message5);
 
 
         ServerSocket serverSocket;
