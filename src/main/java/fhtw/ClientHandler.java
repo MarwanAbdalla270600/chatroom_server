@@ -109,8 +109,12 @@ public class ClientHandler extends Thread {
                 break;
             case "addFriend":
                 String friendUsername = body;
-                //addUser(username, friendUsername);
-                this.writer.writeObject(true);
+
+                if (User.addUser(this.username, friendUsername)) {
+                    this.writer.writeObject(true);
+                } else {
+                    this.writer.writeObject(false);
+                }
 
                 break;
             case "initData":

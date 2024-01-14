@@ -21,10 +21,12 @@ public class Main {
         User testUser = new User("Max", "Test123", 'm');
         User testUser2 = new User("Flo", "Test123", 'm');
         User testUser3 = new User("Tom", "Test123", 'm');
+        User testUser4 = new User("Marwan", "Test123", 'm');
 
         DatabaseHandler.getRegisteredUsers().put("Max", testUser);
         DatabaseHandler.getRegisteredUsers().put("Flo", testUser2);
         DatabaseHandler.getRegisteredUsers().put("Tom", testUser3);
+        DatabaseHandler.getRegisteredUsers().put("Marwan", testUser4);
 
         testUser.addUser(testUser.getUsername(), testUser2.getUsername());
         testUser.addUser(testUser.getUsername(), testUser3.getUsername());
