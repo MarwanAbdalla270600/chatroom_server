@@ -36,6 +36,9 @@ public class PrivateChat implements Serializable {
         this.chatMessages = new LinkedList<>();
         //TODO LocalDateTime timeStamp;
     }
+    public PrivateChat () {
+
+    }
 
     public static String convertSetToJson(List<PrivateChat> privateChats) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -70,4 +73,24 @@ public class PrivateChat implements Serializable {
             }
         }
     }
+
+    public static boolean addUser(String sender, String receiver) {
+        User senderUser = DatabaseHandler.getRegisteredUsers().get(sender);
+        User receiverUser = DatabaseHandler.getRegisteredUsers().get(receiver);
+        System.out.println(sender);
+        System.out.println(receiver);
+        if (senderUser == null || receiverUser == null) {
+            System.out.println("SENDER "+senderUser);
+            System.out.println("Receiver "+receiverUser);
+            return false;
+        }
+        PrivateChat chat = new PrivateChat(sender, receiver);
+        DatabaseHandler.getPrivateChats().put(chat.getChatId(), chat); //adding privatchatroom to UserService HashMap
+        System.out.print("HashMAPS ");
+        System.out.println(DatabaseHandler.getPrivateChats());
+        senderUser.getPrivateChats().add(chat);
+        receiverUser.getPrivateChats().add(chat);
+        return true;
+    }
+
 }

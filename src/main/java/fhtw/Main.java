@@ -28,8 +28,8 @@ public class Main {
         DatabaseHandler.getRegisteredUsers().put("Tom", testUser3);
         DatabaseHandler.getRegisteredUsers().put("Marwan", testUser4);
 
-        User.addUser(testUser.getUsername(), testUser2.getUsername());
-        User.addUser(testUser.getUsername(), testUser3.getUsername());
+        PrivateChat.addUser(testUser.getUsername(), testUser2.getUsername());
+        PrivateChat.addUser(testUser.getUsername(), testUser3.getUsername());
 
         PrivateChatMessage message = new PrivateChatMessage("Max", "Das ist eine Nachricht");
         PrivateChatMessage message2 = new PrivateChatMessage("Max", "22Das ist eine Nachricht 222");
@@ -54,7 +54,7 @@ public class Main {
         Socket socket;
 
         try {
-            serverSocket = new ServerSocket(12345);
+            serverSocket = new ServerSocket(12346);
             while (true) {
                 System.out.println("Waiting for clients...");
                 socket = serverSocket.accept();

@@ -1,9 +1,11 @@
 package fhtw;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import fhtw.chat.PrivateChat;
 import fhtw.data.DatabaseHandler;
 import fhtw.data.ValidationController;
+import fhtw.message.PrivateChatMessage;
 import fhtw.user.User;
 import lombok.Getter;
 
@@ -109,11 +111,30 @@ public class ClientHandler extends Thread {
             case "addFriend":
                 String friendUsername = body;
 
-                if (User.addUser(this.username, friendUsername)) {
+                if (PrivateChat.addUser(this.username, friendUsername)) {
                     this.writer.writeObject(true);
                 } else {
                     this.writer.writeObject(false);
                 }
+                break;
+
+            case "sendMessage":
+                System.out.println("We are in sendMessage");
+
+                try {
+                    PrivateChatMessage newMessage = PrivateChatMessage.fromJson(body);
+                    System.out.println("NEW MESSAGE: " + newMessage);
+                    PrivateChat chat = DatabaseHandler.findPrivatChatbyId(newMessage.getChatId());
+                    chat.addMsg(newMessage);
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+
+                }
+
+                this.writer.writeObject(true);
+
+
 
                 break;
             case "initData":
@@ -127,9 +148,9 @@ public class ClientHandler extends Thread {
                 //System.out.println(userChats);
                 //System.out.println("JSON:" + PrivateChat.convertSetToJson(userChats));
                 this.writer.writeObject(PrivateChat.convertSetToJson(userChats));
-
-
                 break;
+
+
             default:
                 this.writer.writeObject(true);
                 break;
