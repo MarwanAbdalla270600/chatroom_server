@@ -3,6 +3,7 @@ package fhtw;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fhtw.chat.PrivateChat;
 import fhtw.data.DatabaseHandler;
 import fhtw.message.PrivateChatMessage;
@@ -17,6 +18,8 @@ public class Main {
     private static final ArrayList<ClientHandler> clients = new ArrayList<>();
 
     public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException {
+        ObjectMapper mapper = new ObjectMapper(); // Just a test instantiation
+        System.out.println("ObjectMapper test: " + mapper);
         //Starting server:
         User testUser = new User("Max", "Test123", 'f');
         User testUser2 = new User("Flo", "Test123", 'f');
@@ -54,7 +57,7 @@ public class Main {
         Socket socket;
 
         try {
-            serverSocket = new ServerSocket(12345);
+            serverSocket = new ServerSocket(80);
             while (true) {
                 System.out.println("Waiting for clients...");
                 socket = serverSocket.accept();

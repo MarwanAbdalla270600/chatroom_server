@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import fhtw.user.User;
 import lombok.Getter;
@@ -19,6 +20,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class PrivateChat implements Serializable {
+    private static final Logger logger = Logger.getLogger(PrivateChat.class.getName());
+
     private int chatId;
     private String firstMember;
     private String secondMember;
@@ -53,6 +56,10 @@ public class PrivateChat implements Serializable {
 
 
     public static void setOnlineForList(List<PrivateChat> list) {
+        if (list == null) {
+            logger.warning("List of PrivateChats is null.");
+            return; // Exit the method to prevent NullPointerException
+        }
         for(PrivateChat chat: list) {
             String firstString = DatabaseHandler.getPrivateChats().get(chat.chatId).getFirstMember();
             String secondString = DatabaseHandler.getPrivateChats().get(chat.chatId).getSecondMember();
@@ -63,10 +70,12 @@ public class PrivateChat implements Serializable {
             User second = DatabaseHandler.getRegisteredUsers().get(secondString);
 
 
-            if(first != null && second != null) {
-                System.out.println("first: " + first.isOnline());
-                System.out.println("second: " + second.isOnline());
+            if (first != null && second != null) {
+                logger.info("first: " + first.getUsername() + " online status: " + first.isOnline());
+                logger.info("second: " + second.getUsername() + " online status: " + second.isOnline());
                 chat.setOnline(first.isOnline() && second.isOnline());
+            } else {
+                logger.warning("One or both users in a chat are null. Chat ID: " + chat.getChatId());
             }
         }
     }

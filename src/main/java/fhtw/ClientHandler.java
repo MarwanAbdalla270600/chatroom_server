@@ -13,9 +13,12 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
 
 @Getter
 public class ClientHandler extends Thread {
+    private static final Logger logger = Logger.getLogger(ClientHandler.class.getName());
 
     private ArrayList<ClientHandler> clients;
 
@@ -32,7 +35,10 @@ public class ClientHandler extends Thread {
             this.writer = new ObjectOutputStream(socket.getOutputStream());
             this.reader = new ObjectInputStream((socket.getInputStream()));
             this.clients = clients;
+            logger.info("ClientHandler initialized for socket: " + socket);
+
         } catch (IOException e) {
+            logger.severe("Error initializing ClientHandler: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -44,33 +50,43 @@ public class ClientHandler extends Thread {
             String message;
             while (true) {
                 message = (String) reader.readObject();
+                logger.info("Received message: " + message);
                 if (message.equalsIgnoreCase("exit")) {
                     break;
                 }
-
                 String header = getHeader(message);
                 String body = getBody(message);
                 handleMethod(header, body);
             }
-            {
-
+            User user = DatabaseHandler.getRegisteredUsers().get(username);
+            if (user != null) {
+                user.setOnlineStatus(false);
+            } else {
+                logger.warning("User not found for username: " + username);
             }
         } catch (IOException e) {
-            System.out.println("User disconnected");
+            logger.warning("User disconnected or I/O error: " + e.getMessage());
         } catch (ClassNotFoundException e) {
+            logger.severe("Class not found: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
             clients.remove(this);
             try {
-                DatabaseHandler.getRegisteredUsers().get(username).setOnlineStatus(false);
+                User user = DatabaseHandler.getRegisteredUsers().get(username);
+                if (user != null) {
+                    user.setOnlineStatus(false);
+                } else {
+                    logger.warning("User not found for username in finally block: " + username);
+                }
                 reader.close();
                 writer.close();
                 socket.close();
             } catch (IOException e) {
-                /*e.printStackTrace();*/
+                logger.severe("Unexpected error in finally block: " + e.getMessage());
             }
         }
+
     }
 
 
@@ -78,19 +94,24 @@ public class ClientHandler extends Thread {
         User user;
         switch (header) {
             case "register":
+                logger.info("Attempting to register a new user");
                 user = User.fromJson(body);
-                user.setPrivateChats(); //GANZ WICHTIG, SONST CRASHED ALLES
+                logger.info("User parsed from JSON: " + user);
+
+                if (user == null) {
+                    logger.warning("Parsed user is null after JSON conversion.");
+                    this.writer.writeObject(false);
+                    break;
+                }
+
                 if (ValidationController.registerNewUser(user)) {
                     DatabaseHandler.getRegisteredUsers().put(user.getUsername(), user);
-
-                    System.out.println("User with Name " + user.getUsername() + " registered");
+                    logger.info("User successfully registered: " + user.getUsername());
                     this.writer.writeObject(true);
                 } else {
+                    logger.warning("Failed to register user: " + user.getUsername());
                     this.writer.writeObject(false);
-                    System.out.println("nana so nit, try again");
                 }
-                System.out.println(DatabaseHandler.getRegisteredUsers());
-
                 break;
             case "login":
                 user = User.fromJson(body);
@@ -117,19 +138,31 @@ public class ClientHandler extends Thread {
 
                 break;
             case "initData":
-                System.out.println("initdata");
-                User tmp = DatabaseHandler.getRegisteredUsers().get(this.username);
-                System.out.println("TEST: " + tmp);
-                //System.out.println("IN initData");
-                System.out.println(this.username);
-                List<PrivateChat> userChats = DatabaseHandler.getRegisteredUsers().get(this.username).getPrivateChats();
+                logger.info("Initializing data for user: " + this.username);
+
+                if (this.username == null || this.username.isEmpty()) {
+                    logger.warning("Username is null or empty when initializing data.");
+                    this.writer.writeObject(false); // Respond with failure
+                    break;
+                }
+
+                user = DatabaseHandler.getRegisteredUsers().get(this.username);
+                if (user == null) {
+                    logger.warning("User not found for username: " + this.username);
+                    this.writer.writeObject(false); // Respond with failure
+                    break;
+                }
+
+                List<PrivateChat> userChats = user.getPrivateChats();
+                if (userChats == null) {
+                    logger.warning("Private chats list is null for user: " + this.username);
+                    userChats = new ArrayList<>(); // Initialize to empty list if that's appropriate
+                }
+
                 PrivateChat.setOnlineForList(userChats);
-                //System.out.println(userChats);
-                //System.out.println("JSON:" + PrivateChat.convertSetToJson(userChats));
-                this.writer.writeObject(PrivateChat.convertSetToJson(userChats));
-
-
+                this.writer.writeObject(PrivateChat.convertSetToJson(userChats)); // Send the list to the client
                 break;
+
             default:
                 this.writer.writeObject(true);
                 break;
