@@ -84,12 +84,10 @@ public class ClientHandler extends Thread {
                 user.setPrivateChats(); //GANZ WICHTIG, SONST CRASHED ALLES
                 if (ValidationController.registerNewUser(user)) {
                     DatabaseHandler.getRegisteredUsers().put(user.getUsername(), user);
-
                     System.out.println("User with Name " + user.getUsername() + " registered");
                     this.writer.writeObject(true);
                 } else {
                     this.writer.writeObject(false);
-                    System.out.println("nana so nit, try again");
                 }
                 System.out.println(DatabaseHandler.getRegisteredUsers());
 
@@ -105,12 +103,10 @@ public class ClientHandler extends Thread {
                     this.writer.writeObject(true);
                 } else {
                     this.writer.writeObject(false);
-                    System.out.println("nana so nit, try again");
                 }
                 break;
             case "addFriend":
                 String friendUsername = body;
-
                 if (PrivateChat.addUser(this.username, friendUsername)) {
                     this.writer.writeObject(true);
                 } else {
@@ -138,18 +134,12 @@ public class ClientHandler extends Thread {
 
                 break;
             case "initData":
-                System.out.println("initdata");
-                User tmp = DatabaseHandler.getRegisteredUsers().get(this.username);
-                System.out.println("TEST: " + tmp);
-                //System.out.println("IN initData");
                 System.out.println(this.username);
                 List<PrivateChat> userChats = DatabaseHandler.getRegisteredUsers().get(this.username).getPrivateChats();
                 PrivateChat.setOnlineForList(userChats);
-                //System.out.println(userChats);
-                //System.out.println("JSON:" + PrivateChat.convertSetToJson(userChats));
+                System.out.println(DatabaseHandler.getPrivateChats());
                 this.writer.writeObject(PrivateChat.convertSetToJson(userChats));
                 break;
-
 
             default:
                 this.writer.writeObject(true);
