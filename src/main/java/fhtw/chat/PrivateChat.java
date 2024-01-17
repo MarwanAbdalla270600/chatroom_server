@@ -8,7 +8,6 @@ import fhtw.message.PrivateChatMessage;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import fhtw.user.User;
 import lombok.Getter;
@@ -18,26 +17,22 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class PrivateChat implements Serializable {
-    private int chatId;
+public class PrivateChat extends Chat implements Serializable {
+
     private String firstMember;
     private String secondMember;
     private List<PrivateChatMessage> chatMessages;
-    private static int nextId = 0;
     private boolean isOnline;
 
     public PrivateChat(String firstMember, String secondMember) {
-        this.chatId = nextId;
-        nextId++;
+        super();
         this.firstMember = firstMember;
         this.firstMember += DatabaseHandler.getRegisteredUsers().get(firstMember).getGender();  //for gender
         this.secondMember = secondMember;
         this.secondMember += DatabaseHandler.getRegisteredUsers().get(secondMember).getGender();//for gender
         this.chatMessages = new LinkedList<>();
-        //TODO LocalDateTime timeStamp;
     }
     public PrivateChat () {
-
     }
 
     public static String convertSetToJson(List<PrivateChat> privateChats) throws JsonProcessingException {
@@ -65,7 +60,6 @@ public class PrivateChat implements Serializable {
             User first = DatabaseHandler.getRegisteredUsers().get(firstString);
             User second = DatabaseHandler.getRegisteredUsers().get(secondString);
 
-
             if(first != null && second != null) {
                 System.out.println("first: " + first.isOnline());
                 System.out.println("second: " + second.isOnline());
@@ -80,17 +74,20 @@ public class PrivateChat implements Serializable {
         System.out.println(sender);
         System.out.println(receiver);
         if (senderUser == null || receiverUser == null) {
-            System.out.println("SENDER "+senderUser);
-            System.out.println("Receiver "+receiverUser);
+            System.out.println("SENDER " + senderUser + "is NULL");
+            System.out.println("Receiver " + receiverUser + "is NULL");
             return false;
         }
         PrivateChat chat = new PrivateChat(sender, receiver);
         DatabaseHandler.getPrivateChats().put(chat.getChatId(), chat); //adding privatchatroom to UserService HashMap
-        System.out.print("HashMAPS ");
-        System.out.println(DatabaseHandler.getPrivateChats());
         senderUser.getPrivateChats().add(chat);
         receiverUser.getPrivateChats().add(chat);
         return true;
     }
 
+    public static boolean sendMessage(PrivateChatMessage message) {
+        PrivateChat chat = DatabaseHandler.findPrivatChatbyId(message.getChatId());
+        chat.addMsg(message);
+        return true;
+    }
 }

@@ -17,7 +17,7 @@ public class Main {
     private static final ArrayList<ClientHandler> clients = new ArrayList<>();
 
     public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException {
-        //Starting server:
+        // Data Testing:
         User testUser = new User("Max", "Test123", 'm');
         User testUser2 = new User("Flo", "Test123", 'm');
         User testUser3 = new User("Tom", "Test123", 'm');
@@ -28,40 +28,43 @@ public class Main {
         DatabaseHandler.getRegisteredUsers().put("Flo", testUser2);
         DatabaseHandler.getRegisteredUsers().put("Tom", testUser3);
         DatabaseHandler.getRegisteredUsers().put("Marwan", testUser4);
-/*
+        DatabaseHandler.getRegisteredUsers().put("Mira", testUser5);
+
+
         PrivateChat.addUser(testUser.getUsername(), testUser2.getUsername());
         PrivateChat.addUser(testUser.getUsername(), testUser3.getUsername());
+        PrivateChat.addUser(testUser2.getUsername(), testUser3.getUsername());
+        PrivateChat.addUser(testUser5.getUsername(), testUser4.getUsername());
+        PrivateChat.addUser(testUser4.getUsername(), testUser2.getUsername());
 
         PrivateChatMessage message = new PrivateChatMessage("Max", "Das ist eine Nachricht");
         PrivateChatMessage message2 = new PrivateChatMessage("Max", "22Das ist eine Nachricht 222");
         PrivateChatMessage message3 = new PrivateChatMessage("Tom", "33Das ist eine Nachricht3333");
         PrivateChatMessage message4 = new PrivateChatMessage("Max", "Hey Tom");
-        PrivateChatMessage message5 = new PrivateChatMessage("Tom", "Hey Max");
+        PrivateChatMessage message5 = new PrivateChatMessage("Tom", "FLO/MARWAN");
 
         DatabaseHandler.findPrivatChatbyId(0).addMsg(message);
-        DatabaseHandler.findPrivatChatbyId(0).addMsg(message2);
-        DatabaseHandler.findPrivatChatbyId(0).addMsg(message3);
-
-
-        DatabaseHandler.findPrivatChatbyId(1).addMsg(message);
         DatabaseHandler.findPrivatChatbyId(1).addMsg(message2);
-        DatabaseHandler.findPrivatChatbyId(1).addMsg(message3);
-        DatabaseHandler.findPrivatChatbyId(1).addMsg(message4);
-        DatabaseHandler.findPrivatChatbyId(1).addMsg(message5);*/
+        DatabaseHandler.findPrivatChatbyId(2).addMsg(message3);
+        DatabaseHandler.findPrivatChatbyId(3).addMsg(message4);
+        DatabaseHandler.findPrivatChatbyId(4).addMsg(message5);
+
+        System.out.println("Printing PrivateChat Infos: ");
+        System.out.println(DatabaseHandler.getPrivateChats());
 
 
+
+        //Starting server:
         ServerSocket serverSocket;
-
         Socket socket;
 
         try {
             serverSocket = new ServerSocket(12345);
             while (true) {
-                System.out.println("Waiting for clients...");
+                System.out.println("Waiting for clients.....");
                 socket = serverSocket.accept();
-                System.out.println("Connected Successfully...");
+                System.out.println("Connected Successfully.");
 
-                /** passed socket and client Array to ClientHandler Class and Start Thread...*/
                 ClientHandler clientThread = new ClientHandler(socket, clients);
                 clients.add(clientThread);
                 clientThread.start();

@@ -28,17 +28,6 @@ public class ValidationController {
         return false;
     }
 
-    public static User findUser(String username) {
-        if (username == null || username.isEmpty()) {
-            return null;
-        }
-        if (DatabaseHandler.getRegisteredUsers().containsKey(username)) {
-            User searchedUser = DatabaseHandler.getRegisteredUsers().get(username);
-            return searchedUser;
-        }
-        return null;
-    }
-
     public static boolean checkLogin(User user) {
         return loginUsernameIsCorrect(user) && loginPasswordIsCorrect(user);
     }
@@ -101,4 +90,4 @@ public class ValidationController {
         return containsDigit && containsLetter;
     }
 
-}//end
+}
