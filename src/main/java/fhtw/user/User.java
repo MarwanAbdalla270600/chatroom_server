@@ -10,13 +10,13 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 @Getter
 @ToString
 public class User implements Serializable {
+
     private String username;
     private String password;
     private Character gender;
@@ -31,7 +31,6 @@ public class User implements Serializable {
         this.privateChats = new ArrayList<>();
     }
 
-
     public User() {
         this.privateChats = new ArrayList<>();
     }
@@ -43,32 +42,6 @@ public class User implements Serializable {
     public void setOnlineStatus(boolean online) {
         this.online = online;
     }
-
-
-
-    public User findUser(String username) {
-        if (username == null || username.isEmpty()) {
-            return null;
-        }
-        if (DatabaseHandler.getRegisteredUsers().containsKey(username)) {
-            User searchedUser = DatabaseHandler.getRegisteredUsers().get(username);
-            return searchedUser;
-        }
-        return null;
-    }
-
-
-
-    public boolean sendMessage(String senderUsername, int chatId, String messageText) {
-        User sender = findUser(senderUsername);
-        PrivateChat chat = DatabaseHandler.findPrivatChatbyId(chatId);
-        PrivateChatMessage newMessage = new PrivateChatMessage(senderUsername, messageText);
-        //this.privateChats.add(chat.getChatId()); //adding to user
-        DatabaseHandler.getPrivateChats().put(chat.getChatId(), chat);
-        System.out.println("Message successfully sent to " + chatId);
-        return true;
-    }
-
 
 
     public static User fromJson(String json) throws JsonProcessingException {

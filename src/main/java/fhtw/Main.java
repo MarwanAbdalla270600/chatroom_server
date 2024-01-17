@@ -17,7 +17,7 @@ public class Main {
     private static final ArrayList<ClientHandler> clients = new ArrayList<>();
 
     public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException {
-        //Starting server:
+        // Data Testing:
         User testUser = new User("Max", "Test123", 'm');
         User testUser2 = new User("Flo", "Test123", 'm');
         User testUser3 = new User("Tom", "Test123", 'm');
@@ -54,19 +54,17 @@ public class Main {
 
 
 
-
+        //Starting server:
         ServerSocket serverSocket;
-
         Socket socket;
 
         try {
             serverSocket = new ServerSocket(12345);
             while (true) {
-                System.out.println("Waiting for clients...");
+                System.out.println("Waiting for clients.....");
                 socket = serverSocket.accept();
-                System.out.println("Connected Successfully...");
+                System.out.println("Connected Successfully.");
 
-                /** passed socket and client Array to ClientHandler Class and Start Thread...*/
                 ClientHandler clientThread = new ClientHandler(socket, clients);
                 clients.add(clientThread);
                 clientThread.start();

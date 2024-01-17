@@ -20,12 +20,9 @@ import java.util.List;
 public class ClientHandler extends Thread {
 
     private ArrayList<ClientHandler> clients;
-
     private Socket socket;
-
     private ObjectInputStream reader;
     private ObjectOutputStream writer;
-
     private String username;
 
     public ClientHandler(Socket socket, ArrayList<ClientHandler> clients) {
@@ -78,6 +75,7 @@ public class ClientHandler extends Thread {
 
     public void handleMethod(String header, String body) throws IOException {
         User user;
+
         switch (header) {
             case "register":
                 user = User.fromJson(body);
@@ -90,8 +88,8 @@ public class ClientHandler extends Thread {
                     this.writer.writeObject(false);
                 }
                 System.out.println(DatabaseHandler.getRegisteredUsers());
-
                 break;
+
             case "login":
                 user = User.fromJson(body);
                 System.out.println(user);
@@ -105,6 +103,7 @@ public class ClientHandler extends Thread {
                     this.writer.writeObject(false);
                 }
                 break;
+
             case "addFriend":
                 String friendUsername = body;
                 if (PrivateChat.addUser(this.username, friendUsername)) {
@@ -115,24 +114,15 @@ public class ClientHandler extends Thread {
                 break;
 
             case "sendMessage":
-                System.out.println("We are in sendMessage");
-
                 try {
-                    PrivateChatMessage newMessage = PrivateChatMessage.fromJson(body);
-                    System.out.println("NEW MESSAGE: " + newMessage);
-                    PrivateChat chat = DatabaseHandler.findPrivatChatbyId(newMessage.getChatId());
-                    chat.addMsg(newMessage);
-
+                    if (PrivateChat.sendMessage(PrivateChatMessage.fromJson(body))) {
+                        this.writer.writeObject(true);
+                    }
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
-
                 }
-
-                this.writer.writeObject(true);
-
-
-
                 break;
+
             case "initData":
                 System.out.println(this.username);
                 List<PrivateChat> userChats = DatabaseHandler.getRegisteredUsers().get(this.username).getPrivateChats();
@@ -154,9 +144,7 @@ public class ClientHandler extends Thread {
         } else {
             return json;
         }
-
     }
-
     public String getBody(String json) {
         int semicolonIndex = json.indexOf(';');
         if (semicolonIndex != -1) {
@@ -165,8 +153,6 @@ public class ClientHandler extends Thread {
             return "";
         }
     }
-
-
 }
 
 

@@ -87,4 +87,10 @@ public class PrivateChat extends Chat implements Serializable {
         receiverUser.getPrivateChats().add(chat);
         return true;
     }
+
+    public static boolean sendMessage(PrivateChatMessage message) {
+        PrivateChat chat = DatabaseHandler.findPrivatChatbyId(message.getChatId());
+        chat.addMsg(message);
+        return true;
+    }
 }
