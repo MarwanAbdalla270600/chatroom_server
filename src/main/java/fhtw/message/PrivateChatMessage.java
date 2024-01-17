@@ -14,10 +14,16 @@ import lombok.ToString;
 public class PrivateChatMessage implements Serializable {
     private String senderUsername;
     private String messageText;
+    private int chatId;
 
     public PrivateChatMessage(String senderUsername, String messageText) {
         this.senderUsername = senderUsername;
         this.messageText = messageText;
+    }
+
+
+    public PrivateChatMessage() {
+
     }
 
 

@@ -18,18 +18,19 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException {
         //Starting server:
-        User testUser = new User("Max", "Test123", 'f');
-        User testUser2 = new User("Flo", "Test123", 'f');
-        User testUser3 = new User("Tom", "Test123", 'f');
-        User testUser4 = new User("Marwan", "Test123", 'f');
+        User testUser = new User("Max", "Test123", 'm');
+        User testUser2 = new User("Flo", "Test123", 'm');
+        User testUser3 = new User("Tom", "Test123", 'm');
+        User testUser4 = new User("Marwan", "Test123", 'm');
+        User testUser5 = new User("Mira", "Test123", 'f');
 
         DatabaseHandler.getRegisteredUsers().put("Max", testUser);
         DatabaseHandler.getRegisteredUsers().put("Flo", testUser2);
         DatabaseHandler.getRegisteredUsers().put("Tom", testUser3);
         DatabaseHandler.getRegisteredUsers().put("Marwan", testUser4);
-
-        User.addUser(testUser.getUsername(), testUser2.getUsername());
-        User.addUser(testUser.getUsername(), testUser3.getUsername());
+/*
+        PrivateChat.addUser(testUser.getUsername(), testUser2.getUsername());
+        PrivateChat.addUser(testUser.getUsername(), testUser3.getUsername());
 
         PrivateChatMessage message = new PrivateChatMessage("Max", "Das ist eine Nachricht");
         PrivateChatMessage message2 = new PrivateChatMessage("Max", "22Das ist eine Nachricht 222");
@@ -46,7 +47,7 @@ public class Main {
         DatabaseHandler.findPrivatChatbyId(1).addMsg(message2);
         DatabaseHandler.findPrivatChatbyId(1).addMsg(message3);
         DatabaseHandler.findPrivatChatbyId(1).addMsg(message4);
-        DatabaseHandler.findPrivatChatbyId(1).addMsg(message5);
+        DatabaseHandler.findPrivatChatbyId(1).addMsg(message5);*/
 
 
         ServerSocket serverSocket;
