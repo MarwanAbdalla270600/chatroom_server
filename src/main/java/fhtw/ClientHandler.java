@@ -67,7 +67,7 @@ public class ClientHandler extends Thread {
                 writer.close();
                 socket.close();
             } catch (IOException e) {
-                /*e.printStackTrace();*/
+                e.printStackTrace();
             }
         }
     }

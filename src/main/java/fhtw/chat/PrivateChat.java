@@ -33,7 +33,6 @@ public class PrivateChat extends Chat implements Serializable {
         this.chatMessages = new LinkedList<>();
     }
     public PrivateChat () {
-
     }
 
     public static String convertSetToJson(List<PrivateChat> privateChats) throws JsonProcessingException {
@@ -60,7 +59,6 @@ public class PrivateChat extends Chat implements Serializable {
 
             User first = DatabaseHandler.getRegisteredUsers().get(firstString);
             User second = DatabaseHandler.getRegisteredUsers().get(secondString);
-
 
             if(first != null && second != null) {
                 System.out.println("first: " + first.isOnline());
