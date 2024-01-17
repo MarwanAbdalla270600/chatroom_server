@@ -23,7 +23,6 @@ public class PrivateChatMessage implements Serializable {
 
 
     public PrivateChatMessage() {
-
     }
 
 
@@ -31,4 +30,5 @@ public class PrivateChatMessage implements Serializable {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, PrivateChatMessage.class);
     }
-}//end
+
+}

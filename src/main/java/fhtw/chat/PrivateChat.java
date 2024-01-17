@@ -8,7 +8,6 @@ import fhtw.message.PrivateChatMessage;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import fhtw.user.User;
 import lombok.Getter;

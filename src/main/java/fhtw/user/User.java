@@ -3,8 +3,6 @@ package fhtw.user;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fhtw.chat.PrivateChat;
-import fhtw.data.DatabaseHandler;
-import fhtw.message.PrivateChatMessage;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -43,7 +41,6 @@ public class User implements Serializable {
         this.online = online;
     }
 
-
     public static User fromJson(String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, User.class);
@@ -56,7 +53,5 @@ public class User implements Serializable {
     public void setOnline(boolean isOline) {
         this.online = isOnline();
     }
-
-
 
 }

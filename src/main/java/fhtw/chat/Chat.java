@@ -3,7 +3,6 @@ package fhtw.chat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.EqualsAndHashCode;
 
 @Getter
 @Setter
