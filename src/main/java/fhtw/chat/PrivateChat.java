@@ -18,23 +18,20 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class PrivateChat implements Serializable {
-    private int chatId;
+public class PrivateChat extends Chat implements Serializable {
+
     private String firstMember;
     private String secondMember;
     private List<PrivateChatMessage> chatMessages;
-    private static int nextId = 0;
     private boolean isOnline;
 
     public PrivateChat(String firstMember, String secondMember) {
-        this.chatId = nextId;
-        nextId++;
+        super();
         this.firstMember = firstMember;
         this.firstMember += DatabaseHandler.getRegisteredUsers().get(firstMember).getGender();  //for gender
         this.secondMember = secondMember;
         this.secondMember += DatabaseHandler.getRegisteredUsers().get(secondMember).getGender();//for gender
         this.chatMessages = new LinkedList<>();
-        //TODO LocalDateTime timeStamp;
     }
     public PrivateChat () {
 
@@ -80,17 +77,14 @@ public class PrivateChat implements Serializable {
         System.out.println(sender);
         System.out.println(receiver);
         if (senderUser == null || receiverUser == null) {
-            System.out.println("SENDER "+senderUser);
-            System.out.println("Receiver "+receiverUser);
+            System.out.println("SENDER " + senderUser + "is NULL");
+            System.out.println("Receiver " + receiverUser + "is NULL");
             return false;
         }
         PrivateChat chat = new PrivateChat(sender, receiver);
         DatabaseHandler.getPrivateChats().put(chat.getChatId(), chat); //adding privatchatroom to UserService HashMap
-        System.out.print("HashMAPS ");
-        System.out.println(DatabaseHandler.getPrivateChats());
         senderUser.getPrivateChats().add(chat);
         receiverUser.getPrivateChats().add(chat);
         return true;
     }
-
 }
