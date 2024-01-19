@@ -16,6 +16,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles client interactions for the chat application.
+ * <p>
+ * This class manages communication with individual clients connected to the server.
+ * It processes incoming messages, handles user registration and login, message sending,
+ * and other user actions, maintaining the connection and state for each client.
+ */
 @Getter
 public class ClientHandler extends Thread {
 
@@ -25,6 +32,12 @@ public class ClientHandler extends Thread {
     private ObjectOutputStream writer;
     private String username;
 
+    /**
+     * Constructs a new ClientHandler for handling communication with a client.
+     *
+     * @param socket  the socket representing the connection to the client
+     * @param clients the list of currently connected clients
+     */
     public ClientHandler(Socket socket, ArrayList<ClientHandler> clients) {
         try {
             this.socket = socket;
@@ -36,6 +49,10 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Listens for messages from the client and processes them.
+     * Handles different types of requests based on the message header.
+     */
     @Override
     public void run() {
 
@@ -72,7 +89,14 @@ public class ClientHandler extends Thread {
         }
     }
 
-
+    /**
+     * Processes the request from the client based on the header.
+     * Performs actions such as user registration, login, user search, message sending, and initializing data.
+     *
+     * @param header the header indicating the type of request
+     * @param body   the content of the request
+     * @throws IOException if an I/O error occurs while handling the request
+     */
     public void handleMethod(String header, String body) throws IOException {
         User user;
 
@@ -137,6 +161,12 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Extracts the header from a JSON string.
+     *
+     * @param json the JSON string containing the header and body
+     * @return the header part of the JSON string
+     */
     public String getHeader(String json) {
         int semicolonIndex = json.indexOf(';');
         if (semicolonIndex != -1) {
@@ -145,6 +175,13 @@ public class ClientHandler extends Thread {
             return json;
         }
     }
+
+    /**
+     * Extracts the body from a JSON string.
+     *
+     * @param json the JSON string containing the header and body
+     * @return the body part of the JSON string
+     */
     public String getBody(String json) {
         int semicolonIndex = json.indexOf(';');
         if (semicolonIndex != -1) {
