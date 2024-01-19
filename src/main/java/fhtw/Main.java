@@ -13,9 +13,24 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+/**
+ * The entry point of the chat application server.
+ * <p>
+ * This class initializes test data, sets up the server socket, and continuously listens for incoming client connections.
+ * Upon accepting a connection, it creates a new ClientHandler to manage the communication with the connected client.
+ */
 public class Main {
     private static final ArrayList<ClientHandler> clients = new ArrayList<>();
 
+    /**
+     * The main method where the server is initialized and started.
+     * Test data is created and the server listens for client connections.
+     *
+     * @param args command-line arguments (not used)
+     * @throws InterruptedException if the thread is interrupted while waiting
+     * @throws IOException          if an I/O error occurs while creating the server socket or accepting a client connection
+     * @throws ClassNotFoundException if the class for a serialized object cannot be found
+     */
     public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException {
         // Data Testing:
         User testUser = new User("Max", "Test123", 'm');
