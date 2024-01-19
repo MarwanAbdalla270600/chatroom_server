@@ -94,7 +94,6 @@ public class ClientHandler extends Thread {
         User user;
         switch (header) {
             case "register":
-                logger.info("Attempting to register a new user");
                 user = User.fromJson(body);
                 logger.info("User parsed from JSON: " + user);
 
@@ -102,6 +101,10 @@ public class ClientHandler extends Thread {
                     logger.warning("Parsed user is null after JSON conversion.");
                     this.writer.writeObject(false);
                     break;
+                }
+
+                if (user.getPrivateChats() == null) {
+                    user.setPrivateChats(); // Initialize privateChats
                 }
 
                 if (ValidationController.registerNewUser(user)) {
@@ -113,20 +116,27 @@ public class ClientHandler extends Thread {
                     this.writer.writeObject(false);
                 }
                 break;
+
+
             case "login":
                 user = User.fromJson(body);
-                System.out.println(user);
                 if (ValidationController.checkLogin(user)) {
-                    System.out.println("User with Name " + user.getUsername() + " logged in");
-                    this.username = user.getUsername();
-                    System.out.println(this.username);
-                    DatabaseHandler.getRegisteredUsers().get(username).setOnlineStatus(true);
-                    this.writer.writeObject(true);
+                    User existingUser = DatabaseHandler.getRegisteredUsers().get(user.getUsername());
+                    if (existingUser != null) {
+                        this.username = existingUser.getUsername();
+                        existingUser.setOnlineStatus(true);
+                        if (existingUser.getPrivateChats() == null) {
+                            existingUser.setPrivateChats(); // Initialize privateChats if null
+                        }
+                        this.writer.writeObject(true);
+                    } else {
+                        this.writer.writeObject(false);
+                    }
                 } else {
                     this.writer.writeObject(false);
-                    System.out.println("nana so nit, try again");
                 }
                 break;
+
             case "addFriend":
                 String friendUsername = body;
 
@@ -138,30 +148,29 @@ public class ClientHandler extends Thread {
 
                 break;
             case "initData":
-                logger.info("Initializing data for user: " + this.username);
-
-                if (this.username == null || this.username.isEmpty()) {
-                    logger.warning("Username is null or empty when initializing data.");
-                    this.writer.writeObject(false); // Respond with failure
-                    break;
-                }
+                logger.info("Handling initData for user: " + this.username);
 
                 user = DatabaseHandler.getRegisteredUsers().get(this.username);
                 if (user == null) {
-                    logger.warning("User not found for username: " + this.username);
-                    this.writer.writeObject(false); // Respond with failure
+                    logger.warning("User not found for initData: " + this.username);
+                    this.writer.writeObject(null); // Indicate failure to the client
                     break;
                 }
 
+                logger.info("User found for initData: " + user);
                 List<PrivateChat> userChats = user.getPrivateChats();
                 if (userChats == null) {
                     logger.warning("Private chats list is null for user: " + this.username);
-                    userChats = new ArrayList<>(); // Initialize to empty list if that's appropriate
+                    userChats = new ArrayList<>(); // Initialize to empty list
+                } else {
+                    logger.info("Number of private chats for user: " + userChats.size());
                 }
 
-                PrivateChat.setOnlineForList(userChats);
-                this.writer.writeObject(PrivateChat.convertSetToJson(userChats)); // Send the list to the client
+                String chatJson = PrivateChat.convertSetToJson(userChats);
+                logger.info("Sending private chats JSON to client: " + chatJson);
+                this.writer.writeObject(chatJson);
                 break;
+
 
             default:
                 this.writer.writeObject(true);
@@ -187,8 +196,4 @@ public class ClientHandler extends Thread {
             return "";
         }
     }
-
-
 }
-
-

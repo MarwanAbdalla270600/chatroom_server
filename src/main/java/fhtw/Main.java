@@ -21,12 +21,12 @@ public class Main {
         ObjectMapper mapper = new ObjectMapper(); // Just a test instantiation
         System.out.println("ObjectMapper test: " + mapper);
         //Starting server:
-        User testUser = new User("Max", "Test123", 'f');
+        User testUser = new User("Marko", "Test123", 'f');
         User testUser2 = new User("Flo", "Test123", 'f');
         User testUser3 = new User("Tom", "Test123", 'f');
         User testUser4 = new User("Marwan", "Test123", 'f');
 
-        DatabaseHandler.getRegisteredUsers().put("Max", testUser);
+        DatabaseHandler.getRegisteredUsers().put("Marko", testUser);
         DatabaseHandler.getRegisteredUsers().put("Flo", testUser2);
         DatabaseHandler.getRegisteredUsers().put("Tom", testUser3);
         DatabaseHandler.getRegisteredUsers().put("Marwan", testUser4);
@@ -34,10 +34,10 @@ public class Main {
         User.addUser(testUser.getUsername(), testUser2.getUsername());
         User.addUser(testUser.getUsername(), testUser3.getUsername());
 
-        PrivateChatMessage message = new PrivateChatMessage("Max", "Das ist eine Nachricht");
-        PrivateChatMessage message2 = new PrivateChatMessage("Max", "22Das ist eine Nachricht 222");
+        PrivateChatMessage message = new PrivateChatMessage("Marko", "Das ist eine Nachricht");
+        PrivateChatMessage message2 = new PrivateChatMessage("Marko", "22Das ist eine Nachricht 222");
         PrivateChatMessage message3 = new PrivateChatMessage("Tom", "33Das ist eine Nachricht3333");
-        PrivateChatMessage message4 = new PrivateChatMessage("Max", "Hey Tom");
+        PrivateChatMessage message4 = new PrivateChatMessage("Marko", "Hey Tom");
         PrivateChatMessage message5 = new PrivateChatMessage("Tom", "Hey Max");
 
         DatabaseHandler.findPrivatChatbyId(0).addMsg(message);

@@ -13,10 +13,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
+
 
 @Getter
 @ToString
 public class User implements Serializable {
+    private static final Logger logger = Logger.getLogger(User.class.getName());
+
     private String username;
     private String password;
     private Character gender;
@@ -29,6 +33,7 @@ public class User implements Serializable {
         this.gender = gender;
         this.online = false;
         this.privateChats = new ArrayList<>();
+        logger.info("Creating new user with initialized privateChats: " + username);
     }
 
 
@@ -69,18 +74,19 @@ public class User implements Serializable {
     }
 
     public static boolean addUser(String sender, String receiver) {
+        logger.info("Adding user: Sender = " + sender + ", Receiver = " + receiver);
         User senderUser = DatabaseHandler.getRegisteredUsers().get(sender);
         User receiverUser = DatabaseHandler.getRegisteredUsers().get(receiver);
         System.out.println(sender);
         System.out.println(receiver);
         if (senderUser == null || receiverUser == null) {
-            System.out.println("SENDER "+senderUser);
-            System.out.println("Receiver "+receiverUser);
+            logger.info("SENDER "+senderUser);
+            logger.info("Receiver "+receiverUser);
             return false;
         }
         PrivateChat chat = new PrivateChat(sender, receiver);
         DatabaseHandler.getPrivateChats().put(chat.getChatId(), chat); //adding privatchatroom to UserService HashMap
-        System.out.print("HashMAPS ");
+        logger.info("HashMAPS ");
         System.out.println(DatabaseHandler.getPrivateChats());
         senderUser.getPrivateChats().add(chat);
         receiverUser.getPrivateChats().add(chat);
@@ -93,27 +99,28 @@ public class User implements Serializable {
         User sender = findUser(senderUsername);
         PrivateChat chat = DatabaseHandler.findPrivatChatbyId(chatId);
         PrivateChatMessage newMessage = new PrivateChatMessage(senderUsername, messageText);
+        if (sender == null || chat == null) {
+            logger.warning("Either sender or chat is null, message sending failed.");
+            return false;
+        }
         //this.privateChats.add(chat.getChatId()); //adding to user
         DatabaseHandler.getPrivateChats().put(chat.getChatId(), chat);
-        System.out.println("Message successfully sent to " + chatId);
+        logger.info("Message successfully sent to " + chatId);
         return true;
     }
 
-
-
     public static User fromJson(String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(json, User.class);
+        User user = objectMapper.readValue(json, User.class);
+        if (user.getPrivateChats() == null) {
+            user.setPrivateChats();
+        }
+        return user;
     }
+
     public String toJson() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(this);
     }
-
-    public void setOnline(boolean isOline) {
-        this.online = isOnline();
-    }
-
-
 
 }
