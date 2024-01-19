@@ -11,7 +11,7 @@ COPY build.gradle.kts settings.gradle.kts ./
 COPY src ./src
 
 # Build the application
-RUN gradle build --no-daemon
+RUN gradle clean build --no-daemon
 
 # Use OpenJDK 17 for running the application
 FROM openjdk:17
