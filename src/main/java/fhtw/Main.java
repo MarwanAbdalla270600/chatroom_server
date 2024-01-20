@@ -59,11 +59,24 @@ public class Main {
         PrivateChatMessage message4 = new PrivateChatMessage("Max", "Hey Tom");
         PrivateChatMessage message5 = new PrivateChatMessage("Tom", "FLO/MARWAN");
 
-        DatabaseHandler.findPrivatChatbyId(0).addMsg(message);
-        DatabaseHandler.findPrivatChatbyId(1).addMsg(message2);
-        DatabaseHandler.findPrivatChatbyId(2).addMsg(message3);
-        DatabaseHandler.findPrivatChatbyId(3).addMsg(message4);
-        DatabaseHandler.findPrivatChatbyId(4).addMsg(message5);
+        // Ensure the PrivateChat exists before trying to add messages to it
+        if (DatabaseHandler.findPrivatChatbyId(0) != null) {
+            DatabaseHandler.findPrivatChatbyId(0).addMsg(message);
+        }
+        if (DatabaseHandler.findPrivatChatbyId(1) != null) {
+            DatabaseHandler.findPrivatChatbyId(1).addMsg(message2);
+        }
+        // Ensure the PrivateChat exists before trying to add messages to it
+        if (DatabaseHandler.findPrivatChatbyId(2) != null) {
+            DatabaseHandler.findPrivatChatbyId(2).addMsg(message3);
+        }
+        if (DatabaseHandler.findPrivatChatbyId(3) != null) {
+            DatabaseHandler.findPrivatChatbyId(3).addMsg(message4);
+        }
+        // Ensure the PrivateChat exists before trying to add messages to it
+        if (DatabaseHandler.findPrivatChatbyId(4) != null) {
+            DatabaseHandler.findPrivatChatbyId(4).addMsg(message5);
+        }
 
         System.out.println("Printing PrivateChat Infos: ");
         System.out.println(DatabaseHandler.getPrivateChats());

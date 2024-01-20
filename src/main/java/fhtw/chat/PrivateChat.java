@@ -33,6 +33,7 @@ public class PrivateChat implements Serializable {
     private String secondMember;
     private List<PrivateChatMessage> chatMessages;
     private boolean isOnline;
+    private static int nextId = 0; // This should be static if you want to increment it across all instances
 
     /**
      * Constructs a new PrivateChat with the specified members.
@@ -43,6 +44,7 @@ public class PrivateChat implements Serializable {
      */
     public PrivateChat(String firstMember, String secondMember) {
         super();
+        this.chatId = nextId++;
         this.firstMember = firstMember;
         this.firstMember += DatabaseHandler.getRegisteredUsers().get(firstMember).getGender();  //for gender
         this.secondMember = secondMember;
