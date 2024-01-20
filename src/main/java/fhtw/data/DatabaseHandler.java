@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.logging.Logger;
 import lombok.ToString;
 
 /**
@@ -19,6 +20,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class DatabaseHandler {
+    private static final Logger logger = Logger.getLogger(User.class.getName());
+
     private static Map<String, User> registeredUsers = new HashMap<>();
     private static Map<Integer, PrivateChat> privateChats = new HashMap<>();
 
@@ -49,6 +52,8 @@ public class DatabaseHandler {
      * @return the PrivateChat object if found, or null if no chat with the given ID exists
      */
     public static PrivateChat findPrivatChatbyId(int chatId) {
-        return privateChats.get(chatId);
+        PrivateChat chat = privateChats.get(chatId);
+        logger.info("Retrieved private chat by ID: " + chatId + " - " + chat);
+        return chat;
     }
 }

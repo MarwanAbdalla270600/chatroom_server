@@ -2,12 +2,16 @@ package fhtw.data;
 
 import fhtw.user.User;
 
+import java.util.logging.Logger;
+
+
 /**
  * This class provides methods for validating user registration and login credentials.
  * It includes checks for valid usernames, valid passwords, and the correctness of login details.
  * It interacts with the DatabaseHandler to check against existing users and to register new users.
  */
 public class ValidationController {
+    private static final Logger logger = Logger.getLogger(ValidationController.class.getName());
 
     /**
      * Validates and registers a new user.
@@ -19,7 +23,7 @@ public class ValidationController {
      */
     public static boolean registerNewUser(User user) {
         if (!isValidUsername(user.getUsername())) {
-            System.out.println("Username invalid. Usernames must be between 3 and 25 characters long, and contain only " +
+            logger.warning("Username invalid. Usernames must be between 3 and 25 characters long, and contain only " +
                     "digits and english letters");
             return false;
         }
@@ -32,11 +36,11 @@ public class ValidationController {
 
         if (!DatabaseHandler.getRegisteredUsers().containsKey(user.getUsername())) {
             DatabaseHandler.getRegisteredUsers().put(user.getUsername(), user);
-            System.out.println("New User " + user.getUsername() + " successfully registered");
+            logger.info("New User " + user.getUsername() + " successfully registered");
             return true;
         }
 
-        System.out.println("Username already exists, please choose a other name");
+        logger.warning("Username already exists, please choose a other name");
         return false;
     }
 
@@ -58,10 +62,17 @@ public class ValidationController {
      * @return true if the password is correct, false otherwise
      */
     private static boolean loginPasswordIsCorrect(User user) {
-        if (user.getPassword() == null || user.getPassword().isEmpty()) return false;
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            logger.warning("Password is null or empty");
+            return false;
+        }
         User registeredUser = DatabaseHandler.getRegisteredUsers().get(user.getUsername());
+        if (registeredUser == null) {
+            logger.warning("No registered user found for username: " + user.getUsername());
+            return false;
+        }
         if (!registeredUser.getPassword().equals(user.getPassword())) {
-            System.out.println("pw wrong, try again");
+            logger.warning("Password incorrect for user: " + user.getUsername());
             return false;
         }
         return true;
@@ -74,9 +85,12 @@ public class ValidationController {
      * @return true if the username is correct and registered, false otherwise
      */
     private static boolean loginUsernameIsCorrect(User user) {
-        if (user.getUsername() == null || user.getUsername().isEmpty()) return false;
+        if (user.getUsername() == null || user.getUsername().isEmpty()) {
+            logger.warning("Username is null or empty");
+            return false;
+        }
         if (!DatabaseHandler.getRegisteredUsers().containsKey(user.getUsername())) {
-            System.out.println("Username not correct or not registered, try again");
+            logger.warning("Username not correct or not registered: " + user.getUsername());
             return false;
         }
         return true;

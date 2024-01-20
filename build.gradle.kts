@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("com.github.johnrengelman.shadow") version "7.1.2" // Add the Shadow plugin
 }
 
 group = "fhtw"
@@ -26,4 +27,9 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+tasks.jar {
+    manifest {
+        attributes("Main-Class" to "fhtw.Main")
+    }
 }

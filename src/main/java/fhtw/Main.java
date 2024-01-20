@@ -3,6 +3,7 @@ package fhtw;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fhtw.chat.PrivateChat;
 import fhtw.data.DatabaseHandler;
 import fhtw.message.PrivateChatMessage;
@@ -74,7 +75,7 @@ public class Main {
         Socket socket;
 
         try {
-            serverSocket = new ServerSocket(12345);
+            serverSocket = new ServerSocket(80);
             while (true) {
                 System.out.println("Waiting for clients.....");
                 socket = serverSocket.accept();
