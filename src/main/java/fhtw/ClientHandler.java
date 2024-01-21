@@ -120,7 +120,7 @@ public class ClientHandler extends Thread {
                 if (ValidationController.checkLogin(user)) {
                     System.out.println("User with Name " + user.getUsername() + " logged in");
                     this.username = user.getUsername();
-                    System.out.println(this.username);
+                    //System.out.println(this.username); //for testing
                     DatabaseHandler.getRegisteredUsers().get(username).setOnlineStatus(true);
                     this.writer.writeObject(true);
                 } else {
@@ -148,10 +148,10 @@ public class ClientHandler extends Thread {
                 break;
 
             case "initData":
-                System.out.println(this.username);
+                //System.out.println(this.username); //for testing
                 List<PrivateChat> userChats = DatabaseHandler.getRegisteredUsers().get(this.username).getPrivateChats();
                 PrivateChat.setOnlineForList(userChats);
-                System.out.println(DatabaseHandler.getPrivateChats());
+                //System.out.println(DatabaseHandler.getPrivateChats());    //for testing
                 this.writer.writeObject(PrivateChat.convertSetToJson(userChats));
                 break;
 

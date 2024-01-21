@@ -33,7 +33,7 @@ public class Main {
      */
     public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException {
         // Data Testing:
-        User testUser = new User("Max", "Test123", 'm');
+        /*User testUser = new User("Max", "Test123", 'm');
         User testUser2 = new User("Flo", "Test123", 'm');
         User testUser3 = new User("Tom", "Test123", 'm');
         User testUser4 = new User("Marwan", "Test123", 'm');
@@ -65,7 +65,7 @@ public class Main {
         DatabaseHandler.findPrivatChatbyId(4).addMsg(message5);
 
         System.out.println("Printing PrivateChat Infos: ");
-        System.out.println(DatabaseHandler.getPrivateChats());
+        System.out.println(DatabaseHandler.getPrivateChats());*/
 
 
 

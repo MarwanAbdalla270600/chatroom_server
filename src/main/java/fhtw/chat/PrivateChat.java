@@ -89,8 +89,8 @@ public class PrivateChat extends Chat implements Serializable {
             User second = DatabaseHandler.getRegisteredUsers().get(secondString);
 
             if(first != null && second != null) {
-                System.out.println("first: " + first.isOnline());
-                System.out.println("second: " + second.isOnline());
+                /*System.out.println("first: " + first.isOnline()); //for testing
+                System.out.println("second: " + second.isOnline());*/
                 chat.setOnline(first.isOnline() && second.isOnline());
             }
         }
@@ -107,8 +107,8 @@ public class PrivateChat extends Chat implements Serializable {
     public static boolean addUser(String sender, String receiver) {
         User senderUser = DatabaseHandler.getRegisteredUsers().get(sender);
         User receiverUser = DatabaseHandler.getRegisteredUsers().get(receiver);
-        System.out.println(sender);
-        System.out.println(receiver);
+        /*System.out.println(sender);   //for testing
+        System.out.println(receiver);*/
         if (senderUser == null || receiverUser == null) {
             System.out.println("SENDER " + senderUser + "is NULL");
             System.out.println("Receiver " + receiverUser + "is NULL");
